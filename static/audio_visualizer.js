@@ -26,7 +26,7 @@ class AudioVisualizerHUD {
           window.speechSynthesis.cancel();
           this.isSpeaking = false;
         }
-        label.textContent = `VOICE NARRATOR: ${this.voiceEnabled ? "ON" : "OFF"}`;
+        label.textContent = this.voiceEnabled ? "[VOX: ON]" : "[VOX: OFF]";
         btn.style.opacity = this.voiceEnabled ? "1" : "0.5";
       });
     }
@@ -39,7 +39,7 @@ class AudioVisualizerHUD {
     const cleanText = text.replace(/[\/\*\_\[\]\#]/g, "");
     const utterance = new SpeechSynthesisUtterance(cleanText);
     utterance.rate = 1.05;
-    utterance.pitch = 1.0;
+    utterance.pitch = 0.95;
 
     // Pick a natural voice if available
     const voices = window.speechSynthesis.getVoices();
@@ -66,7 +66,7 @@ class AudioVisualizerHUD {
     for (let i = 0; i < this.bars; i++) {
       if (this.isSpeaking) {
         // High dynamic frequency modulation when voice is speaking
-        const target = 6 + Math.random() * (this.canvas.height - 10);
+        const target = 6 + Math.random() * (this.canvas.height - 8);
         this.heights[i] += (target - this.heights[i]) * 0.35;
       } else {
         // Gentle ambient idle pulse
@@ -86,10 +86,10 @@ class AudioVisualizerHUD {
       const x = i * (barWidth + 2);
       const y = this.canvas.height - h;
 
-      // Color gradient from cyan to electric purple
+      // Color gradient in Amber CRT Phosphor
       const grad = this.ctx.createLinearGradient(0, this.canvas.height, 0, 0);
-      grad.addColorStop(0, "rgba(0, 243, 255, 0.3)");
-      grad.addColorStop(1, this.isSpeaking ? "#00f3ff" : "rgba(129, 140, 248, 0.7)");
+      grad.addColorStop(0, "rgba(255, 176, 0, 0.25)");
+      grad.addColorStop(1, this.isSpeaking ? "#ffb000" : "rgba(255, 176, 0, 0.65)");
 
       this.ctx.fillStyle = grad;
       this.ctx.fillRect(x, y, barWidth, h);

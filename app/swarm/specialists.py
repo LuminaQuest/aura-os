@@ -25,42 +25,42 @@ class SpecialistRegistry:
         self.agents: Dict[str, AgentSpecialist] = {
             "supervisor": AgentSpecialist(
                 agent_id="supervisor",
-                name="Aura Prime",
-                role="Swarm Supervisor & Cognitive Gatekeeper",
-                icon="🧠",
-                color_hex="#38bdf8",
+                name="ORCH-01 // COGNITIVE GATEWAY",
+                role="Swarm Supervisor & Security Gatekeeper",
+                icon="⬡",
+                color_hex="#ffb000",
                 synapse_connections=["strategist", "data_engineer", "executive_synthesizer"]
             ),
             "strategist": AgentSpecialist(
                 agent_id="strategist",
-                name="Nexus Strategist",
-                role="Strategic Decomposition & ToT Architect",
-                icon="🎯",
-                color_hex="#818cf8",
+                name="PLAN-02 // BRANCH EXPLORER",
+                role="ToT Speculative Decomposition Architect",
+                icon="⌬",
+                color_hex="#f59e0b",
                 synapse_connections=["supervisor", "data_engineer", "vision_analyst"]
             ),
             "data_engineer": AgentSpecialist(
                 agent_id="data_engineer",
-                name="Vector & Code Specialist",
-                role="Sandbox Execution & Dynamic Chart Engine",
+                name="EXEC-03 // SANDBOX RUNTIME",
+                role="Isolated Code & Dynamic Chart Engine",
                 icon="⚡",
-                color_hex="#34d399",
+                color_hex="#fbbf24",
                 synapse_connections=["supervisor", "strategist", "executive_synthesizer"]
             ),
             "vision_analyst": AgentSpecialist(
                 agent_id="vision_analyst",
-                name="Spatial Visionary",
-                role="Spatial Layout & Topology Auditor",
-                icon="👁️",
-                color_hex="#f472b6",
+                name="TOPO-04 // GRAPH AUDITOR",
+                role="Synapse Topology & Memory Matrix Specialist",
+                icon="◈",
+                color_hex="#d97706",
                 synapse_connections=["strategist", "executive_synthesizer"]
             ),
             "executive_synthesizer": AgentSpecialist(
                 agent_id="executive_synthesizer",
-                name="Executive Voice",
-                role="Multimodal Briefing & Speech Narrator",
-                icon="🎙️",
-                color_hex="#fbbf24",
+                name="COMM-05 // AUDIO TELEMETRY",
+                role="Multimodal Telemetry & Voice Narrator",
+                icon="▲",
+                color_hex="#fef08a",
                 synapse_connections=["supervisor", "data_engineer", "vision_analyst"]
             )
         }
