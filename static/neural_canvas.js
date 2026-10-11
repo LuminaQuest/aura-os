@@ -33,9 +33,9 @@ class NeuralSynapseCanvas {
     const r = Math.min(cx, cy) * 0.65;
 
     const baseData = [
-      { id: "supervisor", name: "Aura Prime", role: "Swarm Supervisor & Gatekeeper", icon: "🧠", color: "#00f3ff", angle: -Math.PI / 2 },
-      { id: "strategist", name: "Nexus Strategist", role: "ToT Plan Architect", icon: "🎯", color: "#818cf8", angle: -Math.PI / 2 + 1.25 },
-      { id: "data_engineer", name: "Vector & Code", role: "Sandbox Execution Specialist", icon: "⚡", color: "#00ff88", angle: -Math.PI / 2 + 2.5 },
+      { id: "supervisor", name: "Aura Prime", role: "Swarm Supervisor & Gatekeeper", icon: "🧠", color: "#f3d08c", angle: -Math.PI / 2 },
+      { id: "strategist", name: "Nexus Strategist", role: "ToT Plan Architect", icon: "🎯", color: "#c084fc", angle: -Math.PI / 2 + 1.25 },
+      { id: "data_engineer", name: "Vector & Code", role: "Sandbox Execution Specialist", icon: "⚡", color: "#38bdf8", angle: -Math.PI / 2 + 2.5 },
       { id: "vision_analyst", name: "Spatial Visionary", role: "Topology & UI Specialist", icon: "👁️", color: "#f472b6", angle: -Math.PI / 2 + 3.75 },
       { id: "executive_synthesizer", name: "Executive Voice", role: "Multimodal Voice Narrator", icon: "🎙️", color: "#fbbf24", angle: -Math.PI / 2 + 5.0 }
     ];
@@ -86,13 +86,13 @@ class NeuralSynapseCanvas {
         const tgt = this.nodes.find(n => n.id === p.target_agent);
         if (src && tgt) {
           src.pulseRing = 1.0;
-          this.createPhotonStream(src, tgt, p.color);
+          this.createPhotonStream(src, tgt, p.color || "#f3d08c");
         }
       }, idx * 180);
     });
   }
 
-  createPhotonStream(src, tgt, color = "#00f3ff") {
+  createPhotonStream(src, tgt, color = "#f3d08c") {
     const count = 8;
     for (let i = 0; i < count; i++) {
       this.particles.push({
@@ -200,7 +200,7 @@ class NeuralSynapseCanvas {
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // 1. Draw Synapse Connector Wires
+    // 1. Draw Synapse Connector Wires with Warm Iridescent Luminescence
     this.connections.forEach(([srcId, tgtId]) => {
       const src = this.nodes.find(n => n.id === srcId);
       const tgt = this.nodes.find(n => n.id === tgtId);
@@ -208,13 +208,13 @@ class NeuralSynapseCanvas {
         this.ctx.beginPath();
         this.ctx.moveTo(src.x, src.y);
         this.ctx.lineTo(tgt.x, tgt.y);
-        this.ctx.strokeStyle = "rgba(56, 189, 248, 0.15)";
-        this.ctx.lineWidth = 1.5;
+        this.ctx.strokeStyle = "rgba(243, 208, 140, 0.14)";
+        this.ctx.lineWidth = 1.6;
         this.ctx.stroke();
       }
     });
 
-    // 2. Draw Traveling Energy Particles with Glow
+    // 2. Draw Traveling Stardust Energy Particles with Dynamic Glow
     this.particles.forEach(p => {
       if (p.progress >= 0 && p.progress <= 1) {
         const curX = p.src.x + (p.tgt.x - p.src.x) * p.progress;
@@ -224,8 +224,10 @@ class NeuralSynapseCanvas {
         p.tail.forEach((pt, idx) => {
           this.ctx.beginPath();
           this.ctx.arc(pt.x, pt.y, p.size * (1 - idx / p.tail.length), 0, Math.PI * 2);
-          this.ctx.fillStyle = `rgba(0, 243, 255, ${0.4 - idx * 0.08})`;
+          this.ctx.fillStyle = p.color;
+          this.ctx.globalAlpha = 0.4 - (idx * 0.08);
           this.ctx.fill();
+          this.ctx.globalAlpha = 1.0;
         });
 
         // Photon Head
@@ -233,32 +235,34 @@ class NeuralSynapseCanvas {
         this.ctx.arc(curX, curY, p.size, 0, Math.PI * 2);
         this.ctx.fillStyle = p.color;
         this.ctx.shadowColor = p.color;
-        this.ctx.shadowBlur = 14;
+        this.ctx.shadowBlur = 16;
         this.ctx.fill();
         this.ctx.shadowBlur = 0;
       }
     });
 
-    // 3. Draw Agent Nodes
+    // 3. Draw Agent Nodes (VisionOS Celestial Glass Orbs)
     this.nodes.forEach(n => {
       // Pulse ring when active
       if (n.pulseRing > 0) {
         this.ctx.beginPath();
-        this.ctx.arc(n.x, n.y, n.radius + (1 - n.pulseRing) * 30, 0, Math.PI * 2);
-        this.ctx.strokeStyle = `rgba(0, 243, 255, ${n.pulseRing * 0.8})`;
+        this.ctx.arc(n.x, n.y, n.radius + (1 - n.pulseRing) * 32, 0, Math.PI * 2);
+        this.ctx.strokeStyle = n.color;
+        this.ctx.globalAlpha = n.pulseRing * 0.75;
         this.ctx.lineWidth = 2;
         this.ctx.stroke();
+        this.ctx.globalAlpha = 1.0;
       }
 
-      // Outer Glow circle
+      // Outer Glow & Smoked Glass Body
       this.ctx.beginPath();
       this.ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
-      this.ctx.fillStyle = "rgba(10, 16, 29, 0.9)";
+      this.ctx.fillStyle = "rgba(10, 14, 26, 0.92)";
       this.ctx.shadowColor = n.color;
-      this.ctx.shadowBlur = (n === this.hoveredNode || n.pulseRing > 0) ? 22 : 10;
+      this.ctx.shadowBlur = (n === this.hoveredNode || n.pulseRing > 0) ? 26 : 12;
       this.ctx.fill();
 
-      // Border ring
+      // Specular border ring
       this.ctx.lineWidth = 2;
       this.ctx.strokeStyle = n.color;
       this.ctx.stroke();
@@ -270,15 +274,15 @@ class NeuralSynapseCanvas {
       this.ctx.textBaseline = "middle";
       this.ctx.fillText(n.icon, n.x, n.y);
 
-      // Node Name Label
-      this.ctx.font = "bold 11px 'Space Grotesk', sans-serif";
-      this.ctx.fillStyle = "#f8fafc";
-      this.ctx.fillText(n.name, n.x, n.y + n.radius + 16);
+      // Node Name Label (Syne High-Art Display Font)
+      this.ctx.font = "700 12px 'Syne', sans-serif";
+      this.ctx.fillStyle = "#ffffff";
+      this.ctx.fillText(n.name, n.x, n.y + n.radius + 18);
 
       // Node Role sub-label
-      this.ctx.font = "9px 'JetBrains Mono', monospace";
-      this.ctx.fillStyle = "rgba(148, 163, 184, 0.8)";
-      this.ctx.fillText(n.role.split("&")[0], n.x, n.y + n.radius + 28);
+      this.ctx.font = "500 10px 'Plus Jakarta Sans', sans-serif";
+      this.ctx.fillStyle = "rgba(180, 190, 210, 0.75)";
+      this.ctx.fillText(n.role.split("&")[0], n.x, n.y + n.radius + 32);
     });
   }
 }
