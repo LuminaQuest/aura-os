@@ -15,27 +15,28 @@ class TreeOfThoughtVisualizer {
     if (!this.container || !treeData) return;
     this.container.innerHTML = "";
 
-    // 1. Root Intent Tactical Node
+    // 1. Root Intent Node
     const rootEl = document.createElement("div");
     rootEl.className = "tot-root-card tactical-panel";
     rootEl.style.cssText = `
-      background: #000;
-      border: 1px solid var(--accent-amber);
-      padding: 12px 18px;
+      background: rgba(14, 18, 32, 0.6);
+      border: 1px solid var(--border-specular);
+      border-radius: 16px;
+      padding: 14px 20px;
       margin-bottom: 14px;
-      font-family: var(--font-mono);
-      font-size: 0.78rem;
+      font-family: var(--font-body);
+      font-size: 0.82rem;
     `;
     rootEl.innerHTML = `
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-        <span style="color: var(--accent-amber); font-weight: 800; font-family: var(--font-display); font-size: 0.82rem;">
+        <span style="color: var(--aura-lilac); font-weight: 800; font-family: var(--font-display); font-size: 0.88rem;">
           [ROOT] OBJECTIVE CONVERGENCE SEED
         </span>
-        <span style="color: var(--accent-amber-dim); font-size: 0.65rem;">
+        <span style="color: var(--text-tertiary); font-size: 0.68rem; font-family: var(--font-mono);">
           EVAL: ${treeData.planning_latency_ms || 22.4}ms // 3 PATHS EVALUATED
         </span>
       </div>
-      <div style="color: #ffffff; font-weight: 600;">"${escapeHtml(treeData.root_intent)}"</div>
+      <div style="color: #ffffff; font-weight: 500;">"${escapeHtml(treeData.root_intent)}"</div>
     `;
     this.container.appendChild(rootEl);
 
@@ -47,12 +48,12 @@ class TreeOfThoughtVisualizer {
 
       let subStepsHtml = "";
       if (branch.sub_steps && branch.sub_steps.length) {
-        subStepsHtml = branch.sub_steps.map(s => `<span class="substep-pill">► ${escapeHtml(s)}</span>`).join("");
+        subStepsHtml = branch.sub_steps.map(s => `<span class="substep-pill">→ ${escapeHtml(s)}</span>`).join("");
       }
 
       card.innerHTML = `
         <div class="branch-card-header">
-          <span class="branch-name" style="color: ${isSelected ? 'var(--accent-amber-bright)' : 'var(--text-secondary)'};">
+          <span class="branch-name" style="color: ${isSelected ? 'var(--aura-lilac-bright)' : 'var(--text-secondary)'};">
             ${escapeHtml(branch.branch_name)}
           </span>
           <span class="branch-status-badge ${isSelected ? 'selected' : 'pruned'}">
@@ -61,7 +62,7 @@ class TreeOfThoughtVisualizer {
         </div>
         <div class="branch-hypothesis">${escapeHtml(branch.hypothesis)}</div>
         <div class="branch-rationale">
-          <strong style="color: ${isSelected ? 'var(--accent-amber)' : 'var(--accent-red)'};">
+          <strong style="color: ${isSelected ? 'var(--aura-sky)' : 'var(--aura-rose)'};">
             ${isSelected ? "[HEURISTIC ADVANTAGE]:" : "[PRUNING CRITERIA]:"}
           </strong> 
           ${escapeHtml(branch.prune_reason || branch.rationale)}

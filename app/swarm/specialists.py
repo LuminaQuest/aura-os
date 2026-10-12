@@ -28,7 +28,7 @@ class SpecialistRegistry:
                 name="ORCH-01 // COGNITIVE GATEWAY",
                 role="Swarm Supervisor & Security Gatekeeper",
                 icon="⬡",
-                color_hex="#ffb000",
+                color_hex="#a78bfa",
                 synapse_connections=["strategist", "data_engineer", "executive_synthesizer"]
             ),
             "strategist": AgentSpecialist(
@@ -36,7 +36,7 @@ class SpecialistRegistry:
                 name="PLAN-02 // BRANCH EXPLORER",
                 role="ToT Speculative Decomposition Architect",
                 icon="⌬",
-                color_hex="#f59e0b",
+                color_hex="#38bdf8",
                 synapse_connections=["supervisor", "data_engineer", "vision_analyst"]
             ),
             "data_engineer": AgentSpecialist(
@@ -44,7 +44,7 @@ class SpecialistRegistry:
                 name="EXEC-03 // SANDBOX RUNTIME",
                 role="Isolated Code & Dynamic Chart Engine",
                 icon="⚡",
-                color_hex="#fbbf24",
+                color_hex="#818cf8",
                 synapse_connections=["supervisor", "strategist", "executive_synthesizer"]
             ),
             "vision_analyst": AgentSpecialist(
@@ -52,7 +52,7 @@ class SpecialistRegistry:
                 name="TOPO-04 // GRAPH AUDITOR",
                 role="Synapse Topology & Memory Matrix Specialist",
                 icon="◈",
-                color_hex="#d97706",
+                color_hex="#f472b6",
                 synapse_connections=["strategist", "executive_synthesizer"]
             ),
             "executive_synthesizer": AgentSpecialist(
@@ -60,7 +60,7 @@ class SpecialistRegistry:
                 name="COMM-05 // AUDIO TELEMETRY",
                 role="Multimodal Telemetry & Voice Narrator",
                 icon="▲",
-                color_hex="#fef08a",
+                color_hex="#e2e8f0",
                 synapse_connections=["supervisor", "data_engineer", "vision_analyst"]
             )
         }

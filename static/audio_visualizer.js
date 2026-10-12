@@ -86,10 +86,10 @@ class AudioVisualizerHUD {
       const x = i * (barWidth + 2);
       const y = this.canvas.height - h;
 
-      // Color gradient in Amber CRT Phosphor
+      // Ethereal gradient in Celestial Lilac & Ice Cyan
       const grad = this.ctx.createLinearGradient(0, this.canvas.height, 0, 0);
-      grad.addColorStop(0, "rgba(255, 176, 0, 0.25)");
-      grad.addColorStop(1, this.isSpeaking ? "#ffb000" : "rgba(255, 176, 0, 0.65)");
+      grad.addColorStop(0, "rgba(196, 181, 253, 0.2)");
+      grad.addColorStop(1, this.isSpeaking ? "#38bdf8" : "rgba(196, 181, 253, 0.75)");
 
       this.ctx.fillStyle = grad;
       this.ctx.fillRect(x, y, barWidth, h);

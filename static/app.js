@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
             grid[r][c] = Math.random() > 0.3 ? 1 : 0;
           }
           if (grid[r][c]) {
-            ctx.fillStyle = state.isProcessing ? "#ffb000" : "rgba(255, 176, 0, 0.75)";
+            ctx.fillStyle = state.isProcessing ? "#c4b5fd" : "rgba(196, 181, 253, 0.8)";
             ctx.fillRect(c * 4 + 2, r * 4 + 2, 3, 3);
           }
         }
@@ -190,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     state.isProcessing = true;
     btnExecute.disabled = true;
-    btnExecute.innerHTML = `<span class="hazard-stripe"></span><span class="btn-text">[ENGAGING_SWARM...]</span>`;
+    btnExecute.innerHTML = `<span class="btn-text">[DISPATCHING SWARM...]</span>`;
     briefingMeta.textContent = "EXECUTING STREAM";
     briefingText.textContent = "";
 
@@ -236,7 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
       eventSource.addEventListener("synapse_pulse", (evt) => {
         const pulse = JSON.parse(evt.data);
         if (window.neuralCanvas3D) {
-          window.neuralCanvas3D.firePulse(pulse.source_agent, pulse.target_agent, 0xffb000);
+          window.neuralCanvas3D.firePulse(pulse.source_agent, pulse.target_agent, 0x38bdf8);
         }
       });
 
@@ -343,11 +343,11 @@ document.addEventListener("DOMContentLoaded", () => {
   function finishProcessing() {
     state.isProcessing = false;
     btnExecute.disabled = false;
-    btnExecute.innerHTML = `<span class="hazard-stripe"></span><span class="btn-text">[ENGAGE_SWARM // EXEC_CYCLE]</span><span class="btn-arrow">&#9658;</span>`;
+    btnExecute.innerHTML = `<span class="btn-text">[DISPATCH SWARM]</span><span class="btn-arrow">&#9658;</span>`;
   }
 
   // -------------------------------------------------------------
-  // 7. Dynamic Chart.js Sandbox Renderer (NERV Amber Theme)
+  // 7. Dynamic Chart.js Sandbox Renderer (Pinterest Ethereal Theme)
   // -------------------------------------------------------------
   function renderSandboxArtifact(artifact) {
     document.getElementById("sandbox-chart-title").textContent = artifact.title.toUpperCase();
@@ -360,11 +360,11 @@ document.addEventListener("DOMContentLoaded", () => {
       state.currentChart.destroy();
     }
 
-    // Override colors with Amber CRT palette
+    // Override colors with Celestial Lilac & Ice Cyan palette
     if (artifact.chart_data && artifact.chart_data.datasets) {
       artifact.chart_data.datasets.forEach((ds, idx) => {
-        ds.borderColor = idx === 0 ? "#ffb000" : (idx === 1 ? "#34d399" : "#ffc433");
-        ds.backgroundColor = idx === 0 ? "rgba(255, 176, 0, 0.25)" : (idx === 1 ? "rgba(52, 211, 153, 0.25)" : "rgba(255, 196, 51, 0.25)");
+        ds.borderColor = idx === 0 ? "#a78bfa" : (idx === 1 ? "#38bdf8" : "#f472b6");
+        ds.backgroundColor = idx === 0 ? "rgba(167, 139, 250, 0.22)" : (idx === 1 ? "rgba(56, 189, 248, 0.22)" : "rgba(244, 114, 182, 0.22)");
         ds.borderWidth = 2;
       });
     }
@@ -379,25 +379,25 @@ document.addEventListener("DOMContentLoaded", () => {
         plugins: {
           legend: {
             labels: {
-              color: "#ffb000",
-              font: { family: "'JetBrains Mono', monospace", size: 11 }
+              color: "#c4b5fd",
+              font: { family: "'Plus Jakarta Sans', sans-serif", size: 11 }
             }
           }
         },
         scales: artifact.chart_type === "radar" ? {
           r: {
-            grid: { color: "rgba(255, 176, 0, 0.15)" },
-            angleLines: { color: "rgba(255, 176, 0, 0.15)" },
-            pointLabels: { color: "#ffffff", font: { family: "'JetBrains Mono', monospace" } }
+            grid: { color: "rgba(255, 255, 255, 0.08)" },
+            angleLines: { color: "rgba(255, 255, 255, 0.08)" },
+            pointLabels: { color: "#ffffff", font: { family: "'Plus Jakarta Sans', sans-serif" } }
           }
         } : {
           x: {
-            grid: { color: "rgba(255, 176, 0, 0.08)" },
-            ticks: { color: "#8b9bb4", font: { family: "'JetBrains Mono', monospace" } }
+            grid: { color: "rgba(255, 255, 255, 0.05)" },
+            ticks: { color: "#94a3b8", font: { family: "'JetBrains Mono', monospace" } }
           },
           y: {
-            grid: { color: "rgba(255, 176, 0, 0.08)" },
-            ticks: { color: "#8b9bb4", font: { family: "'JetBrains Mono', monospace" } }
+            grid: { color: "rgba(255, 255, 255, 0.05)" },
+            ticks: { color: "#94a3b8", font: { family: "'JetBrains Mono', monospace" } }
           }
         }
       }
