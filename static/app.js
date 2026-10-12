@@ -1,26 +1,25 @@
 /**
- * app.js — NERV x Nostromo Tactical Controller.
- * Manages Three.js 3D Swarm, SSE Real-Time Streaming,
- * Web Audio API Frequency HUD, Living Tree-of-Thought, and Ctrl+K Palette.
+ * app.js — Ultra-Luxury Spatial Controller (beew.studio x VisionOS).
+ * Manages Three.js 3D Swarm, GSAP Camera Portals, SSE Real-Time Streaming,
+ * Web Audio API Procedural Sound Engine, Living Tree-of-Thought, and Quick Launcher.
  */
 
 document.addEventListener("DOMContentLoaded", () => {
   const state = {
-    sessionId: "nostromo-" + Math.random().toString(36).substring(2, 8),
+    sessionId: "aura-" + Math.random().toString(36).substring(2, 8),
     currentChart: null,
     isProcessing: false,
     reasoningSteps: [],
-    activeTab: "canvas-view"
+    activePortal: null
   };
 
   const auraForm = document.getElementById("aura-form");
   const promptInput = document.getElementById("prompt-input");
   const btnExecute = document.getElementById("btn-execute");
+  const btnHeroDispatch = document.getElementById("btn-hero-dispatch");
   const briefingText = document.getElementById("briefing-text");
   const briefingMeta = document.getElementById("briefing-meta");
-  const statLatency = document.getElementById("stat-latency");
   const statGuardrail = document.getElementById("stat-guardrail");
-  const ledGuardrail = document.getElementById("led-guardrail");
 
   // Mini-strip elements
   const stripTokens = document.getElementById("strip-tokens");
@@ -38,18 +37,50 @@ document.addEventListener("DOMContentLoaded", () => {
   const bentoCache = document.getElementById("bento-cache-status");
   const guardIndicatorDot = document.getElementById("guard-indicator-dot");
   const guardTextBanner = document.getElementById("guard-text-banner");
-  const guardDetailText = document.getElementById("guard-detail-text");
-  const waterfallList = document.getElementById("waterfall-list");
 
   // Palette elements
   const paletteModal = document.getElementById("cmd-palette-modal");
   const paletteInput = document.getElementById("cmd-palette-input");
-  const paletteResults = document.getElementById("cmd-palette-results");
   const btnOpenPalette = document.getElementById("btn-open-palette");
   const btnClosePalette = document.getElementById("btn-close-palette");
 
+  // Return to Swarm Nexus button
+  const btnReturnNexus = document.getElementById("btn-return-nexus");
+  if (btnReturnNexus) {
+    btnReturnNexus.addEventListener("click", () => {
+      if (window.neuralCanvas3D) {
+        window.neuralCanvas3D.zoomToNexus();
+      }
+      document.querySelectorAll(".dock-btn").forEach(b => b.classList.remove("active"));
+      const firstDock = document.querySelector('.dock-btn[data-portal="supervisor"]');
+      if (firstDock) firstDock.classList.add("active");
+    });
+  }
+
+  // Floating Portal Dock Buttons
+  document.querySelectorAll(".dock-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".dock-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      const portalId = btn.getAttribute("data-portal");
+      if (window.neuralCanvas3D) {
+        window.neuralCanvas3D.zoomToNode(portalId);
+      }
+    });
+  });
+
+  // Hero Dispatch button triggers form submit
+  if (btnHeroDispatch) {
+    btnHeroDispatch.addEventListener("click", () => {
+      if (!promptInput.value.trim()) {
+        promptInput.value = "Analyze Pareto token economics and compute cost reduction across LLM tiers";
+      }
+      auraForm.dispatchEvent(new Event("submit"));
+    });
+  }
+
   // -------------------------------------------------------------
-  // 1. Animated Pixel Grid Glyph (Retro Cyber Core)
+  // 1. Animated Pixel Grid Glyph (Bioluminescent Core)
   // -------------------------------------------------------------
   const glyphCanvas = document.getElementById("pixel-glyph-canvas");
   if (glyphCanvas) {
@@ -58,8 +89,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let grid = Array(size).fill(0).map(() => Array(size).fill(0));
 
     function drawGlyph() {
-      ctx.fillStyle = "#000000";
-      ctx.fillRect(0, 0, 28, 28);
+      ctx.fillStyle = "#070810";
+      ctx.fillRect(0, 0, 26, 26);
 
       for (let r = 0; r < size; r++) {
         for (let c = 0; c < size; c++) {
@@ -67,55 +98,37 @@ document.addEventListener("DOMContentLoaded", () => {
             grid[r][c] = Math.random() > 0.3 ? 1 : 0;
           }
           if (grid[r][c]) {
-            ctx.fillStyle = state.isProcessing ? "#c4b5fd" : "rgba(196, 181, 253, 0.8)";
-            ctx.fillRect(c * 4 + 2, r * 4 + 2, 3, 3);
+            ctx.fillStyle = state.isProcessing ? "#38bdf8" : "rgba(196, 181, 253, 0.85)";
+            ctx.fillRect(c * 4 + 1, r * 4 + 1, 3, 3);
           }
         }
       }
-      setTimeout(drawGlyph, state.isProcessing ? 80 : 260);
+      setTimeout(drawGlyph, state.isProcessing ? 70 : 240);
     }
     drawGlyph();
   }
 
   // -------------------------------------------------------------
-  // 2. Viewport Tab Switcher
-  // -------------------------------------------------------------
-  function switchTab(viewId) {
-    document.querySelectorAll(".view-btn").forEach(b => b.classList.remove("active"));
-    document.querySelectorAll(".view-panel").forEach(p => p.classList.remove("active"));
-
-    const btn = document.querySelector(`.view-btn[data-view="${viewId}"]`);
-    if (btn) btn.classList.add("active");
-
-    const panel = document.getElementById(viewId);
-    if (panel) panel.classList.add("active");
-    state.activeTab = viewId;
-  }
-
-  document.querySelectorAll(".view-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      switchTab(btn.getAttribute("data-view"));
-    });
-  });
-
-  // -------------------------------------------------------------
-  // 3. Preset Trigger Chips
+  // 2. Preset Trigger Chips
   // -------------------------------------------------------------
   document.querySelectorAll(".trigger-chip").forEach(chip => {
     chip.addEventListener("click", () => {
-      promptInput.value = chip.getAttribute("data-query");
+      const q = chip.getAttribute("data-query");
+      promptInput.value = q;
       auraForm.dispatchEvent(new Event("submit"));
     });
   });
 
   // -------------------------------------------------------------
-  // 4. Trace Drawer Toggle & Close Inspector
+  // 3. Trace Drawer Toggle & Close Inspector
   // -------------------------------------------------------------
-  btnToggleTrace.addEventListener("click", () => {
-    reasoningDrawer.classList.toggle("open");
-    const isOpen = reasoningDrawer.classList.contains("open");
-    document.getElementById("trace-toggle-icon").textContent = isOpen ? "[-]" : "[+]";
-  });
+  if (btnToggleTrace) {
+    btnToggleTrace.addEventListener("click", () => {
+      reasoningDrawer.classList.toggle("open");
+      const isOpen = reasoningDrawer.classList.contains("open");
+      document.getElementById("trace-toggle-icon").textContent = isOpen ? "[-]" : "[+]";
+    });
+  }
 
   const btnCloseInsp = document.getElementById("btn-close-insp");
   if (btnCloseInsp) {
@@ -125,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // -------------------------------------------------------------
-  // 5. Command Palette (Ctrl+K)
+  // 4. Command Palette (Ctrl+K)
   // -------------------------------------------------------------
   function openPalette() {
     paletteModal.classList.add("open");
@@ -138,11 +151,13 @@ document.addEventListener("DOMContentLoaded", () => {
     paletteModal.classList.remove("open");
   }
 
-  btnOpenPalette.addEventListener("click", openPalette);
-  btnClosePalette.addEventListener("click", closePalette);
-  paletteModal.addEventListener("click", (e) => {
-    if (e.target === paletteModal) closePalette();
-  });
+  if (btnOpenPalette) btnOpenPalette.addEventListener("click", openPalette);
+  if (btnClosePalette) btnClosePalette.addEventListener("click", closePalette);
+  if (paletteModal) {
+    paletteModal.addEventListener("click", (e) => {
+      if (e.target === paletteModal) closePalette();
+    });
+  }
 
   window.addEventListener("keydown", (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
@@ -150,8 +165,12 @@ document.addEventListener("DOMContentLoaded", () => {
       if (paletteModal.classList.contains("open")) closePalette();
       else openPalette();
     }
-    if (e.key === "Escape" && paletteModal.classList.contains("open")) {
-      closePalette();
+    if (e.key === "Escape") {
+      if (paletteModal.classList.contains("open")) {
+        closePalette();
+      } else if (window.neuralCanvas3D && window.neuralCanvas3D.activePortalId) {
+        window.neuralCanvas3D.zoomToNexus();
+      }
     }
   });
 
@@ -163,7 +182,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  paletteInput.addEventListener("input", (e) => filterPalette(e.target.value));
+  if (paletteInput) {
+    paletteInput.addEventListener("input", (e) => filterPalette(e.target.value));
+  }
 
   document.querySelectorAll(".palette-item").forEach(item => {
     item.addEventListener("click", () => {
@@ -174,14 +195,16 @@ document.addEventListener("DOMContentLoaded", () => {
       if (action === "query") {
         promptInput.value = val;
         auraForm.dispatchEvent(new Event("submit"));
-      } else if (action === "tab") {
-        switchTab(val);
+      } else if (action === "portal") {
+        if (window.neuralCanvas3D) {
+          window.neuralCanvas3D.zoomToNode(val);
+        }
       }
     });
   });
 
   // -------------------------------------------------------------
-  // 6. Swarm Dispatch via Server-Sent Events (SSE)
+  // 5. Swarm Dispatch via Server-Sent Events (SSE)
   // -------------------------------------------------------------
   auraForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -190,7 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     state.isProcessing = true;
     btnExecute.disabled = true;
-    btnExecute.innerHTML = `<span class="btn-text">[DISPATCHING SWARM...]</span>`;
+    btnExecute.innerHTML = `<span>DISPATCHING...</span><span class="arrow-circle">✦</span>`;
     briefingMeta.textContent = "EXECUTING STREAM";
     briefingText.textContent = "";
 
@@ -200,17 +223,21 @@ document.addEventListener("DOMContentLoaded", () => {
     traceStepsContainer.innerHTML = "";
 
     // Reset Guardrail indicators to armed
-    guardIndicatorDot.className = "indicator-dot green";
+    guardIndicatorDot.className = "pulsing-dot cyan";
     guardTextBanner.textContent = "GATEWAY PERIMETER: ARMED & VERIFIED";
-    guardDetailText.textContent = "Auditing prompt input tokens against prompt injection vectors...";
     statGuardrail.textContent = "ZERO-PII: OK";
-    ledGuardrail.className = "chip-led led-green";
     stripGuardrail.textContent = "SECURE";
-    stripGuardrail.className = "strip-val green";
 
     // Set Three.js nodes to thinking state
     if (window.neuralCanvas3D) {
       window.neuralCanvas3D.setNodeState("supervisor", "THINKING");
+    }
+
+    // Check if query is adversarial injection
+    const isInjectionTest = query.toLowerCase().includes("ignore") || query.toLowerCase().includes("bypass") || query.toLowerCase().includes("override");
+    if (isInjectionTest && window.neuralCanvas3D) {
+      // Trigger 3D Forcefield Shield deflection ripples & attack laser!
+      window.neuralCanvas3D.triggerDefenseShield();
     }
 
     try {
@@ -219,15 +246,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       eventSource.addEventListener("guardrail_alert", (evt) => {
         const d = JSON.parse(evt.data);
-        guardIndicatorDot.className = "indicator-dot red";
-        guardTextBanner.textContent = "⚠️ SECURITY INTERCEPT: PROMPT INJECTION HALTED";
-        guardDetailText.textContent = d.detail || "Query quarantined under Zero-PII defense protocol.";
-        statGuardrail.textContent = "SECURITY INTERCEPT";
-        ledGuardrail.className = "chip-led led-red";
+        guardIndicatorDot.className = "pulsing-dot red";
+        guardTextBanner.textContent = "⚠️ DEFENSE INTERCEPT: INJECTION BLOCKED";
+        statGuardrail.textContent = "INTERCEPTED";
         stripGuardrail.textContent = "HALTED";
-        stripGuardrail.className = "strip-val red";
 
         if (window.neuralCanvas3D) {
+          window.neuralCanvas3D.triggerDefenseShield();
           window.neuralCanvas3D.setNodeState("supervisor", "BLOCKED");
           window.neuralCanvas3D.setNodeState("strategist", "BLOCKED");
         }
@@ -263,9 +288,8 @@ document.addEventListener("DOMContentLoaded", () => {
         handleCompletion(result);
       });
 
-      eventSource.onerror = (err) => {
+      eventSource.onerror = () => {
         eventSource.close();
-        // Fallback to standard execution if SSE fails
         fallbackExecute(query);
       };
 
@@ -292,7 +316,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function handleCompletion(data) {
     // 1. Update Telemetry Numbers
-    statLatency.textContent = `LATENCY: ${data.total_latency_ms} ms`;
     briefingMeta.textContent = `CONVERGED: ${data.total_latency_ms} ms`;
     stripTokens.textContent = data.total_tokens || 842;
     stripCost.textContent = `$${(data.total_cost_usd || 0.000126).toFixed(6)}`;
@@ -302,37 +325,18 @@ document.addEventListener("DOMContentLoaded", () => {
     bentoTokens.textContent = data.total_tokens || 842;
     bentoCost.textContent = `$${(data.total_cost_usd || 0.000126).toFixed(6)}`;
     bentoCache.textContent = data.cache_hit ? "HIT (1.2ms)" : "MISS";
-    bentoCache.className = `big-num ${data.cache_hit ? "green" : "amber"}`;
 
-    // 3. Update Waterfall Timeline
-    if (data.agent_metrics && data.agent_metrics.length) {
-      waterfallList.innerHTML = "";
-      const maxLat = Math.max(...data.agent_metrics.map(m => m.latency_ms), 1);
-
-      data.agent_metrics.forEach(m => {
-        const item = document.createElement("div");
-        item.className = "waterfall-item";
-        const pct = Math.max(12, Math.round((m.latency_ms / maxLat) * 95));
-        item.innerHTML = `
-          <span class="wf-agent">${m.name.split(" ")[0]}</span>
-          <div class="wf-bar-wrap"><div class="wf-bar" style="width: ${pct}%"></div></div>
-          <span class="wf-time">${m.latency_ms}ms</span>
-        `;
-        waterfallList.appendChild(item);
-      });
-    }
-
-    // 4. Render Living Tree-of-Thought
+    // 3. Render Living Tree-of-Thought
     if (window.totVisualizer && data.thought_tree) {
       window.totVisualizer.render(data.thought_tree);
     }
 
-    // 5. Render Sandbox Chart & Code
+    // 4. Render Sandbox Chart & Code
     if (data.sandbox_artifact) {
       renderSandboxArtifact(data.sandbox_artifact);
     }
 
-    // 6. Voice Narrator
+    // 5. Voice Narrator
     if (window.audioHUD && data.voice_speech_script && !data.is_guardrail_triggered) {
       window.audioHUD.speak(data.voice_speech_script);
     }
@@ -343,15 +347,17 @@ document.addEventListener("DOMContentLoaded", () => {
   function finishProcessing() {
     state.isProcessing = false;
     btnExecute.disabled = false;
-    btnExecute.innerHTML = `<span class="btn-text">[DISPATCH SWARM]</span><span class="btn-arrow">&#9658;</span>`;
+    btnExecute.innerHTML = `<span>DISPATCH</span><span class="arrow-circle">→</span>`;
   }
 
   // -------------------------------------------------------------
-  // 7. Dynamic Chart.js Sandbox Renderer (Pinterest Ethereal Theme)
+  // 6. Dynamic Chart.js Sandbox Renderer (Pinterest Ethereal Theme)
   // -------------------------------------------------------------
   function renderSandboxArtifact(artifact) {
-    document.getElementById("sandbox-chart-title").textContent = artifact.title.toUpperCase();
-    document.getElementById("sandbox-code-display").textContent = artifact.code_snippet || "// Code executed safely in sandbox runtime.";
+    const codeDisplay = document.getElementById("sandbox-code-display");
+    if (codeDisplay) {
+      codeDisplay.textContent = artifact.code_snippet || "// Code executed safely in sandbox runtime.";
+    }
 
     const canvas = document.getElementById("sandbox-chart");
     if (!canvas || !window.Chart) return;
@@ -360,7 +366,6 @@ document.addEventListener("DOMContentLoaded", () => {
       state.currentChart.destroy();
     }
 
-    // Override colors with Celestial Lilac & Ice Cyan palette
     if (artifact.chart_data && artifact.chart_data.datasets) {
       artifact.chart_data.datasets.forEach((ds, idx) => {
         ds.borderColor = idx === 0 ? "#a78bfa" : (idx === 1 ? "#38bdf8" : "#f472b6");
@@ -380,7 +385,7 @@ document.addEventListener("DOMContentLoaded", () => {
           legend: {
             labels: {
               color: "#c4b5fd",
-              font: { family: "'Plus Jakarta Sans', sans-serif", size: 11 }
+              font: { family: "'Plus Jakarta Sans', sans-serif", size: 10 }
             }
           }
         },
@@ -392,12 +397,12 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         } : {
           x: {
-            grid: { color: "rgba(255, 255, 255, 0.05)" },
-            ticks: { color: "#94a3b8", font: { family: "'JetBrains Mono', monospace" } }
+            grid: { color: "rgba(255, 255, 255, 0.04)" },
+            ticks: { color: "#94a3b8", font: { family: "'JetBrains Mono', monospace", size: 9 } }
           },
           y: {
-            grid: { color: "rgba(255, 255, 255, 0.05)" },
-            ticks: { color: "#94a3b8", font: { family: "'JetBrains Mono', monospace" } }
+            grid: { color: "rgba(255, 255, 255, 0.04)" },
+            ticks: { color: "#94a3b8", font: { family: "'JetBrains Mono', monospace", size: 9 } }
           }
         }
       }
@@ -408,6 +413,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
     promptInput.value = "Analyze Pareto token economics and compute cost reduction across LLM tiers";
     auraForm.dispatchEvent(new Event("submit"));
-  }, 400);
+  }, 450);
 });
 
